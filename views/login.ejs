@@ -1,0 +1,33 @@
+<%- include("./partials/header") %>
+
+<main id="login-main" class="bg-dark d-flex flex-column justify-content-center align-items-center bg-primary">
+    <section id="login-form" class="bg-light d-flex flex-column">
+        <i class="bi fs-1 text-center bi-person"></i>
+        <h1 class="text-center"><%= titlePage %></h1>
+        <form action="/logar" method="POST" class="mt-2">
+            <div class="form-group mt-3">
+                <label class="fs-4 fw-bold mb-1" for="email">E-mail</label>
+                <input autofocus type="email" placeholder="Digite seu e-mail" class="form-control" name="email" id="email">
+                <input readonly type="hidden" class="form-control" value="<%= token %>" name="token" id="token">
+            </div>
+            <div class="form-group mt-3">
+                <label class="fs-4 fw-bold mb-1" for="password">Senha</label>
+                <input type="password" placeholder="Digite sua senha" class="form-control" name="password" id="senha">
+            </div>
+            <div class="form-group mt-3 d-flex flex-column justify-content-start align-items-start">
+                <button class="btn btn-primary">Entrar</button>
+                <div class="form-group mt-2 d-flex justify-content-center align-items-center">
+                    <button type="button" class="btn btn-light">Recuperar senha</button>
+                    <button type="button" class="btn ms-2 btn-light" data-bs-toggle="modal" data-bs-target="#cadastrar-usuario">Quero me cadastrar</button>
+                </div>
+            </div>
+        </form>
+    </section>
+    
+</main>
+
+<%- include("./partials/footer") %>
+<%- include("./partials/modals/login-cadastrar") %>
+<script>
+    btnClose();
+</script>

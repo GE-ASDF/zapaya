@@ -1,0 +1,40 @@
+<!-- Modal cadastrar usuário -->
+<div class="modal fade" id="cadastrar-usuario" tabindex="-1" aria-labelledby="cadastrar-usuarioLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="cadastrar-usuarioLabel">Cadastro de usuário</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="/users/create" method="POST">
+                <div class="form-group d-flex justify-content-start align-items-center">
+                    <div class="form-group w-100 me-2">
+                        <label class="fs-4 fw-bold mb-1" for="name">Nome</label>
+                        <input required type="text" placeholder="Digite seu nome" class="form-control" name="name" id="name">
+                    </div>
+                    <div class="form-group w-100">
+                        <label class="fs-4 fw-bold mb-1" for="sobrenome">Sobrenome</label>
+                        <input required type="text" placeholder="Digite seu sobrenome" class="form-control" name="lastname" id="lastname">
+                    </div>
+                </div>
+                <div class="form-group mt-3">
+                    <label class="fs-4 fw-bold mb-1" for="email">E-mail</label>
+                    <input required autofocus type="email" placeholder="Digite seu e-mail" class="form-control" name="email" id="email">
+                    <input readonly type="hidden" class="form-control" value="<%= token %>" name="token" id="token">
+                </div>
+                <div class="form-group mt-3">
+                    <label class="fs-4 fw-bold mb-1" for="password">Senha</label>
+                    <input required type="password" placeholder="Digite sua senha" class="form-control" name="password" id="password">
+                </div>
+                <div class="form-group mt-3 d-flex flex-column justify-content-start align-items-start">
+                    <button class="btn btn-primary">Cadastrar</button>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
