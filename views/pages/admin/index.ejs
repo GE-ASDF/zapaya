@@ -1,0 +1,110 @@
+<%- include("../../partials/header") %>
+
+<div id="qrcode-component" v-if="showQr">
+    <qrcode>
+
+    </qrcode>
+</div>
+
+<section id="chat" style="max-height: 100vh;" class="container d-grid flex-wrap">
+    <div class="row">
+        <div style="max-height: 100vh;overflow-y: auto;" class="col-sm-3">
+            <div class="p-4" id="chats-header">
+                <h2 class="text-center">AmoraZap</h2>
+            </div>
+            <% chats.forEach(chat => {%> 
+            <div ref="chatHeaderInfo"  class="card mx-2 text-start">
+            <div class="card-body d-grid">
+                <div @click="handleClick" id="<%= chat.number %>" style="cursor: pointer;" class="row">
+                    <div class="col-sm-4">
+                        <img id="user-pic" class="card-img-top" src="" alt="Title">
+                    </div>
+                    <div class="col">
+                        <h4 style="word-break: break-word;" class="card-title fs-5"><%= chat.name %></h4>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <%})%>
+        </div>
+        <div style="max-height: 100vh;" class="col bg-primary">
+            <div v-text="username" class="chat-header bg-success p-2 w-100">
+
+            </div>
+            <div style="overflow-y:auto;max-height:calc(100% - 98px);height:calc(100% - 98px)" id="chat-body" class="bg-danger d-flex flex-column p-4">
+
+            </div>
+            <div class="w-100 bg-warning p-4" id="chat-input">
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<%- include("../../partials/footer") %>
+<script src="/js/render-qrcode.js"></script>
+<script>
+    $(".card").ready(()=>{
+        Array.from(document.querySelectorAll(".row")).forEach((card)=>{
+            fetch("/admin/getProfilePic/", {method:'POST', headers:{"Content-Type":"application/json"}, body:JSON.stringify({chatId: card.id})})
+            .then((res)=>{
+                return res.json();                
+            }).then(pic=>{
+                if(pic.img){
+                    card.querySelector('img').src = pic.img;
+                }else{
+                    card.querySelector('img').src = '/img/person.png';
+                }
+            })
+        })
+    })
+</script>
+
+<script>
+    const chat = new Vue({
+        el: "#chat",
+        data:{
+            username:'',
+        },
+        methods:{
+            handleClick(event){
+                let userId = event.currentTarget.id;
+                let userName = event.currentTarget.querySelector("h4").textContent
+                this.username = userName;
+                fetch("/admin/getMessagesById/", {method:'POST', headers:{"Content-Type":"application/json"}, body:JSON.stringify({userId: userId})})
+                .then((res)=>{
+                    return res.json();
+                }).then((messages)=>{
+                    $("#chat-body").ready(()=>{
+                        document.querySelector("#chat-body").innerHTML = '';
+                        messages.forEach( message =>{
+                            if(message.type == "chat"){
+                                if(message.from == userId){
+                                    $("#chat-body").append(`
+                                        <p style="border-radius: 10px;" class="p-2 w-50 bg-dark align-self-start">
+                                            ${message.body}
+                                        </p>
+                                        `)
+                                    }else{
+                                        $("#chat-body").append(`
+                                        <p style="border-radius: 10px;" class="p-2 w-50 bg-dark align-self-end">
+                                            ${message.body}
+                                        </p>
+                                        `)
+                                    }
+                                    $("#chat-body").ready(()=>{
+
+                                        $('#chat-body').animate({                   // unsando o jQuery animate para animar o scroll
+                                            scrollTop: $('#chat-body').prop('scrollHeight')  // fazer scroll para a posição correspondente à altura do 'ul', o que é o mesmo que dizer scroll até ao fundo
+                                        }, 1000);
+                                    })
+                            }
+                        })
+                    })
+                })
+            }
+        }
+    })
+</script>

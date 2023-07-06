@@ -6,6 +6,7 @@ const { app } = require("./src/app");
 app.use("/", LoginController);
 app.use("/", UsersController);
 app.use("/admin", HomeAdminController);
+
 app.use((req, res, next) => {
     req.flash("error", "Página não encontrada.");
     res.redirect("back");

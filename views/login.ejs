@@ -4,18 +4,21 @@
     <section id="login-form" class="bg-light d-flex flex-column">
         <i class="bi fs-1 text-center bi-person"></i>
         <h1 class="text-center"><%= titlePage %></h1>
-        <form action="/logar" method="POST" class="mt-2">
+        <small v-if="showMsg">Todos os campos devem estar preenchidos</small>
+        <form @submit="handleSubmit" ref="formLogin" action="/logar" method="POST" class="mt-2">
             <div class="form-group mt-3">
                 <label class="fs-4 fw-bold mb-1" for="email">E-mail</label>
-                <input autofocus type="email" placeholder="Digite seu e-mail" class="form-control" name="email" id="email">
-                <input readonly type="hidden" class="form-control" value="<%= token %>" name="token" id="token">
+                <input ref="email" @blur="handleLostFocus" autofocus type="email" placeholder="Digite seu e-mail" class="form-control" name="email">
+                <input ref="token" readonly type="hidden" class="form-control" value="<%= token %>" name="token">
+                <small v-if="showMsgMail">Digite um e-mail válido</small>
             </div>
             <div class="form-group mt-3">
                 <label class="fs-4 fw-bold mb-1" for="password">Senha</label>
-                <input type="password" placeholder="Digite sua senha" class="form-control" name="password" id="senha">
+                <input ref="senha" type="password" placeholder="Digite sua senha" class="form-control" name="password">
+
             </div>
             <div class="form-group mt-3 d-flex flex-column justify-content-start align-items-start">
-                <button class="btn btn-primary">Entrar</button>
+                <button ref="enterButton" class="btn btn-primary">Entrar</button>
                 <div class="form-group mt-2 d-flex justify-content-center align-items-center">
                     <button type="button" class="btn btn-light">Recuperar senha</button>
                     <button type="button" class="btn ms-2 btn-light" data-bs-toggle="modal" data-bs-target="#cadastrar-usuario">Quero me cadastrar</button>
@@ -25,7 +28,32 @@
     </section>
     
 </main>
-
+<script>
+    const loginForm = new Vue({
+        el:"#login-main",
+        data:{
+            showMsg: false,
+            showMsgMail:false,
+        },
+        methods:{
+            handleLostFocus(e){
+                if(!e.target.value.includes("@")){
+                    this.showMsgMail = true;
+                    this.$refs.enterButton.disabled = "disabled"
+                }else{
+                    this.showMsgMail = false
+                    this.$refs.enterButton.disabled = ""
+                }
+            }  ,
+            handleSubmit(e){
+                if(this.$refs.email.value == '' || !this.$refs.email.value.includes("@") || this.$refs.senha.value == '' || this.$refs.token.value == ''){
+                    showMsg = true;
+                    e.preventDefault();
+                }
+            }
+        }
+    })
+</script>
 <%- include("./partials/footer") %>
 <%- include("./partials/modals/login-cadastrar") %>
 <script>

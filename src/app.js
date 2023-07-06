@@ -7,6 +7,8 @@ const body = require("body-parser");
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
 const connection = require("../core/Model");
+const wppSession = require("./wppconnect");
+const getStatusClient = require("../helpers/getStatusClient");
 connection.authenticate().then(()=>{console.log("Conexão feita com sucesso.")}).catch((err)=>{console.log("Erro na conexão", err)})
 
 
@@ -23,8 +25,19 @@ app.use(body.json());
 
 app.set("view engine", "ejs")
 
-  
-io.on("connection", (socket)=>{
+
+io.on("connection", async (socket)=>{
+
+    wppSession.then((client)=>{
+        getStatusClient(client)
+        .then((status)=>{
+            if(status !== "CONNECTED"){
+                io.emit("img");
+            }else{
+                io.emit("conectado");
+            }
+        })
+    })
     console.log("Novo cliente conectado");
     socket.on("disconnect", ()=>{
         console.log("Cliente desconectado");
